@@ -1,31 +1,58 @@
 const campo = document.getElementById("campo");
 const jogador = document.getElementById("jogador");
-const btnIniciarVolta = document.getElementById("btnIniciarVolta");
+const button = document.getElementById("btnIniciarVolta");
 
-let x = 0;
-let y = 0;
-let direcao = 1;
+let speed = 1;
 
-btnIniciarVolta.addEventListener("click", () => {
+addEventListener("click", (e) => {
+  var id = setInterval(mover, speed);
 
-  const largura = campo.offsetWidth
-  const altura = campo.offsetHeight
-  const velocidade = 2;
+  let largura = campo.scrollWidth - 20;
+  let altura = campo.scrollHeight - 20;
 
-  setInterval(() => {
-    if (x + jogador >= largura) {
-      y += velocidade * direcao;
-      direcao = +1;
-    } else if (y + jogador.offsetHeight >= altura) {
-      x += velocidade * direcao;
-    } else if (x) {
-      y -= velocidade * direcao;
-      direcao = 1;
-    } else {
-      x -= velocidade * direcao;
+  let x = 0;
+  let y = 0;
+  let direcao = "baixo";
+  let completouVolta = false;
+
+  function mover() {
+    switch (direcao) {
+      case "baixo":
+        if (y < altura) {
+          y += speed;
+        } else {
+          direcao = "direita";
+        }
+        break;
+      case "direita":
+        if (x < largura) {
+          x += speed;
+        } else {
+          direcao = "cima";
+        }
+        break;
+      case "cima":
+        if (y > 0) {
+          y -= speed;
+        } else {
+          direcao = "esquerda";
+        }
+        break;
+      case "esquerda":
+        if (x > 0) {
+          x -= speed;
+        } else {
+          direcao = "parado";
+          completouVolta = true;
+        }
+        break;
     }
 
     jogador.style.left = x + "px";
     jogador.style.top = y + "px";
-  }, 10);
+
+    if (completouVolta) {
+      clearInterval(id);
+    }
+  }
 });
